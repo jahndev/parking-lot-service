@@ -10,26 +10,54 @@ To run the parking lot service locally, follow these steps:
 2. Compile the Java code.
 3. Run the main application.
 
+## API Documentations
+
+http://localhost:8080/swagger-ui/index.html
+
 ## API Endpoints
 
 The parking lot service provides the following API endpoints:
 
-- `/park`: Parks a vehicle in the parking lot.
-- `/leave`: Removes a vehicle from the parking lot.
-- `/spots/remaining`: Retrieves the number of remaining parking spots for each type.
-- `/spots/taken/:vehicleType`: Checks if all parking spots are taken for a given vehicle type.
+- `PUT /parking/vehicle-leaving` 
+- `POST /parking/{type}/{count}` 
+- `POST /parking/vehicle` 
+- `GET /parking/remaining` 
+- `GET /parking/all-taken/{vehicleType}`
 
 ## Examples
 
 ```bash
-# Park Vehicle
-curl -X POST -H "Content-Type: application/json" -d '{"vehicleType": "CAR"}' http://localhost:8080/park
+# Create COMPACT Spots
+curl --location --request POST 'http://localhost:8080/parking/COMPACT/5'
 
-# Vehicle Leaves Parking Lot
-curl -X POST -H "Content-Type: application/json" -d '{"vehicleType": "CAR"}' http://localhost:8080/leave
+# Create Regular Spots
+curl --location --request POST 'http://localhost:8080/parking/MOTORCYCLE/5'
 
-# Find Remaining Spots
-curl http://localhost:8080/spots/remaining
+# Create Motorcycle Spots
+curl --location --request POST 'http://localhost:8080/parking/MOTORCYCLE/5'
 
-# Check If All Parking Spots Are Taken
-curl http://localhost:8080/spots/taken/CAR
+# Park a CAR
+curl --location 'http://localhost:8080/parking/vehicle' \
+--header 'Content-Type: application/json' \
+--data '{"licensePlate": "abc123", "vehicleType": "CAR"}'
+
+# Park a MotorCycle
+curl --location 'http://localhost:8080/parking/vehicle' \
+--header 'Content-Type: application/json' \
+--data '{"licensePlate": "xyz345", "vehicleType": "MOTORCYCLE"}'
+
+# Park a Van
+curl --location 'http://localhost:8080/parking/vehicle' \
+--header 'Content-Type: application/json' \
+--data '{"licensePlate": "van999", "vehicleType": "VAN"}'
+
+# Vehicle leaving - Van case
+curl --location --request PUT 'http://localhost:8080/parking/vehicle-leaving' \
+--header 'Content-Type: application/json' \
+--data '{"licensePlate": "van999", "vehicleType": "VAN"}'
+
+# Get Remaining Spots
+curl --location 'http://localhost:8080/parking/remaining'
+
+# Check if all spots has been taken by VehicleType: CAR, MOTORCYCLE, VAN
+curl --location 'http://localhost:8080/parking/all-taken/CAR'
