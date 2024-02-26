@@ -14,6 +14,10 @@ To run the parking lot service locally, follow these steps:
 
 http://localhost:8080/swagger-ui/index.html
 
+## Postman Collection
+
+https://elements.getpostman.com/redirect?entityId=31808609-a5557b12-f07f-4955-b67b-7760a0c2ba7b&entityType=collection
+
 ## API Endpoints
 
 The parking lot service provides the following API endpoints:
