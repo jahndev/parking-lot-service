@@ -19,20 +19,20 @@ public abstract class Vehicle {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private VehicleSize size;
+    private VehicleType type;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "vehicle")
     @JoinTable(name = "vehicle_parking_slot",
             joinColumns = @JoinColumn(name = "vehicle_id"),
             inverseJoinColumns = @JoinColumn(name = "parking_slot_id"))
-    private List<ParkingSlot> parkingSlots = new ArrayList<>();
+    private List<ParkingSpot> parkingSpots = new ArrayList<>();
 
     public Vehicle() {
     }
 
-    public Vehicle(String licensePlate, VehicleSize size) {
+    public Vehicle(String licensePlate, VehicleType type) {
         this.licensePlate = licensePlate;
-        this.size = size;
+        this.type = type;
     }
 
     public Long getId() {
@@ -51,31 +51,31 @@ public abstract class Vehicle {
         this.licensePlate = licensePlate;
     }
 
-    public VehicleSize getSize() {
-        return size;
+    public VehicleType getType() {
+        return type;
     }
 
-    public void setSize(VehicleSize size) {
-        this.size = size;
+    public void setType(VehicleType type) {
+        this.type = type;
     }
 
-    public List<ParkingSlot> getParkingSlots() {
-        return parkingSlots;
+    public List<ParkingSpot> getParkingSlots() {
+        return parkingSpots;
     }
 
-    public void setParkingSlots(List<ParkingSlot> parkingSlots) {
-        this.parkingSlots = parkingSlots;
+    public void setParkingSlots(List<ParkingSpot> parkingSpots) {
+        this.parkingSpots = parkingSpots;
     }
 
-    public void addParkingSlot(ParkingSlot parkingSlot) {
-        this.parkingSlots.add(parkingSlot);
+    public void addParkingSlot(ParkingSpot parkingSpot) {
+        this.parkingSpots.add(parkingSpot);
     }
 
-    public void removeParkingSlot(ParkingSlot parkingSlot) {
-        this.parkingSlots.remove(parkingSlot);
+    public void removeParkingSlot(ParkingSpot parkingSpot) {
+        this.parkingSpots.remove(parkingSpot);
     }
 
     public abstract int getRequiredSlots();
 
-    public abstract boolean canFitInSlot(ParkingSlot slot);
+    public abstract boolean canFitInSlot(ParkingSpot slot);
 }

@@ -1,7 +1,7 @@
 package com.charlie.parking.domain;
 
-public enum VehicleSize {
+public enum VehicleType {
     MOTORCYCLE,
-    COMPACT,
-    REGULAR
+    CAR,
+    VAN
 }

@@ -10,7 +10,7 @@ public class Motorcycle extends Vehicle {
     }
 
     public Motorcycle(String licensePlate) {
-        super(licensePlate, VehicleSize.MOTORCYCLE);
+        super(licensePlate, VehicleType.MOTORCYCLE);
     }
 
     @Override
@@ -19,8 +19,8 @@ public class Motorcycle extends Vehicle {
     }
 
     @Override
-    public boolean canFitInSlot(ParkingSlot slot) {
-        return true;
+    public boolean canFitInSlot(ParkingSpot slot) {
+        return slot.getType() == ParkingSpotType.MOTORCYCLE;
     }
 }
 

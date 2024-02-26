@@ -1,6 +1,5 @@
 package com.charlie.parking.domain;
 
-import com.charlie.parking.domain.Vehicle;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
@@ -12,7 +11,7 @@ public class Car extends Vehicle {
     }
 
     public Car(String licensePlate) {
-        super(licensePlate, VehicleSize.COMPACT);
+        super(licensePlate, VehicleType.CAR);
     }
 
     @Override
@@ -21,7 +20,7 @@ public class Car extends Vehicle {
     }
 
     @Override
-    public boolean canFitInSlot(ParkingSlot slot) {
-        return slot.getSize() == VehicleSize.COMPACT || slot.getSize() == VehicleSize.REGULAR;
+    public boolean canFitInSlot(ParkingSpot slot) {
+        return slot.getType() == ParkingSpotType.COMPACT || slot.getType() == ParkingSpotType.REGULAR;
     }
 }

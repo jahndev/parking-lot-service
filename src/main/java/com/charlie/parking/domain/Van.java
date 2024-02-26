@@ -10,7 +10,7 @@ public class Van extends Vehicle {
     }
 
     public Van(String licensePlate) {
-        super(licensePlate, VehicleSize.REGULAR);
+        super(licensePlate, VehicleType.VAN);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class Van extends Vehicle {
     }
 
     @Override
-    public boolean canFitInSlot(ParkingSlot slot) {
-        return slot.getSize() == VehicleSize.REGULAR;
+    public boolean canFitInSlot(ParkingSpot slot) {
+        return slot.getType() == ParkingSpotType.REGULAR;
     }
 }
