@@ -1,6 +1,5 @@
-package com.charlie.parking;
+package com.charlie.parking.controller;
 
-import com.charlie.parking.controller.*;
 import com.charlie.parking.model.*;
 import com.charlie.parking.service.*;
 import com.fasterxml.jackson.core.*;
