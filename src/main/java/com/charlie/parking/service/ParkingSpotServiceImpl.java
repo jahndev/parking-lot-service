@@ -1,6 +1,6 @@
 package com.charlie.parking.service;
 
-import com.charlie.parking.domain.*;
+import com.charlie.parking.model.*;
 import com.charlie.parking.repository.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
@@ -11,13 +11,9 @@ import java.util.stream.*;
 @Service
 public class ParkingSpotServiceImpl implements ParkingSpotService {
     private final ParkingSpotRepository parkingSpotRepository;
-    private final VehicleRepository vehicleRepository;
-
     @Autowired
-    public ParkingSpotServiceImpl(ParkingSpotRepository parkingSpotRepository,
-                                  VehicleRepository vehicleRepository) {
+    public ParkingSpotServiceImpl(ParkingSpotRepository parkingSpotRepository) {
         this.parkingSpotRepository = parkingSpotRepository;
-        this.vehicleRepository = vehicleRepository;
     }
 
     // Implement the methods from the ParkingSpotService interface
@@ -26,10 +22,10 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
         // Logic to park the vehicle
         List<ParkingSpot> parkingSpotList = parkingSpotRepository.findByVehicleLicensePlate(vehicle.getLicensePlate());
         if(!parkingSpotList.isEmpty()) {
-            throw new IllegalArgumentException("Vehicle already exist" + vehicle.getLicensePlate());
+            throw new IllegalArgumentException("Vehicle already exist " + vehicle.getLicensePlate());
         }
 
-        Set<ParkingSpotType> compatibleSpotTypesByVehicleType = ParkingSpotType.getByVehicleType(vehicle.getType());
+        Set<ParkingSpotType> compatibleSpotTypesByVehicleType = ParkingSpotType.getByVehicleType(vehicle.getVehicleType());
 
         List<ParkingSpot> availableSpots = parkingSpotRepository
                 .findAvailableSlotsByVehicleType(compatibleSpotTypesByVehicleType)
@@ -37,11 +33,15 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
                 .limit(vehicle.getRequiredSlots())
                 .collect(Collectors.toList());
 
-        if(availableSpots.size() == vehicle.getRequiredSlots()) {
-            availableSpots
-                    .stream()
-                    .forEach(spot -> spot.setVehicle(vehicle));
+        if(availableSpots.isEmpty()) {
+            throw new IllegalArgumentException("spots hasn't been created, first create spots of type "
+                    + compatibleSpotTypesByVehicleType);
+        }
 
+        if(availableSpots.size() == vehicle.getRequiredSlots()) {
+            for (ParkingSpot spot : availableSpots) {
+                spot.setVehicle(vehicle);
+            }
             parkingSpotRepository.saveAll(availableSpots);
         } else {
             throw new IllegalArgumentException("Cannot park vehicle, not enough free slots "
@@ -51,17 +51,18 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
     }
 
     @Override
-    public void vehicleLeaves(Vehicle vehicle) {
+    public List<ParkingSpot> vehicleLeaves(Vehicle vehicle) {
         List<ParkingSpot> assignedSpots = parkingSpotRepository.findByVehicleLicensePlate(vehicle.getLicensePlate());
         if(assignedSpots.isEmpty()) {
             throw new IllegalArgumentException("Invalid vehicle, not present: " + vehicle.getLicensePlate());
         }
         assignedSpots.forEach(ParkingSpot::unsetVehicle);
         parkingSpotRepository.saveAll(assignedSpots);
+        return assignedSpots;
     }
 
     @Override
-    public Map<ParkingSpotType,Integer> getRemainingSpots() {
+    public Map<ParkingSpotType,Long> getRemainingSpots() {
         return parkingSpotRepository.getCountsByParkingSpotTypes();
     }
 
@@ -71,15 +72,17 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
 
         List<ParkingSpot> spotsByVehicleType = allSpots
                 .stream().filter(
-                        parkingSpot -> parkingSpot.getVehicle().getType().equals(vehicleType)
+                        parkingSpot ->
+                                parkingSpot.getVehicle() != null &&
+                                parkingSpot.getVehicle().getVehicleType().equals(vehicleType)
                 ).toList();
 
         return allSpots.size() == spotsByVehicleType.size();
     }
     public List<ParkingSpot> createParkingSpotsByType(ParkingSpotType parkingSpotType, Integer count) {
         // Check if the total number of parking spots exceeds the limit (25)
-        if (parkingSpotRepository.count() + count >= 25) {
-            throw new IllegalStateException("Parking lot is full. Cannot create more parking spots.");
+        if (parkingSpotRepository.findAll().size() + count > 25) {
+            throw new IllegalStateException("Parking lot is full, cannot create more spots due exceeds 25.");
         }
         // Save the parking spot
         List<ParkingSpot> parkingSpotList = new ArrayList<>();

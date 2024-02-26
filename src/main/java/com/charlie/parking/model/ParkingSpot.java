@@ -1,9 +1,15 @@
-package com.charlie.parking.domain;
+package com.charlie.parking.model;
 
 import jakarta.persistence.*;
 
 @Entity
 public class ParkingSpot {
+
+    public ParkingSpot(Long id, ParkingSpotType parkingSpotType, Vehicle vehicle) {
+        this.id = id;
+        this.parkingSpotType = parkingSpotType;
+        this.vehicle = vehicle;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,8 +17,11 @@ public class ParkingSpot {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ParkingSpotType type;
+    private ParkingSpotType parkingSpotType;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -25,15 +34,11 @@ public class ParkingSpot {
         this.vehicle = null;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
-
     public ParkingSpot() {
     }
 
     public ParkingSpot(ParkingSpotType parkingSpotType) {
-        this.type = parkingSpotType;
+        this.parkingSpotType = parkingSpotType;
     }
 
     public Long getId() {
@@ -43,11 +48,11 @@ public class ParkingSpot {
     public void setId(Long id) {
         this.id = id;
     }
-    public ParkingSpotType getType() {
-        return type;
+    public ParkingSpotType getParkingSpotType() {
+        return parkingSpotType;
     }
 
-    public void setType(ParkingSpotType type) {
-        this.type = type;
+    public void setParkingSpotType(ParkingSpotType parkingSpotType) {
+        this.parkingSpotType = parkingSpotType;
     }
 }

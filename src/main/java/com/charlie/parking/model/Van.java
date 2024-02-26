@@ -1,9 +1,11 @@
-package com.charlie.parking.domain;
+package com.charlie.parking.model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 @Entity
 @DiscriminatorValue("VAN")
+@JsonTypeName("VAN")
 public class Van extends Vehicle {
 
     public Van() {
@@ -20,6 +22,6 @@ public class Van extends Vehicle {
 
     @Override
     public boolean canFitInSlot(ParkingSpot slot) {
-        return slot.getType() == ParkingSpotType.REGULAR;
+        return slot.getParkingSpotType() == ParkingSpotType.REGULAR;
     }
 }

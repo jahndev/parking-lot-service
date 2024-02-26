@@ -1,4 +1,4 @@
-package com.charlie.parking.domain;
+package com.charlie.parking.model;
 
 import java.util.*;
 
