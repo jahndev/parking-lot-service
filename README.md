@@ -6,10 +6,30 @@ This is a simple parking lot service implemented in Java. It allows you to manag
 
 To run the parking lot service locally, follow these steps:
 
-1. Clone the repository.
-2. Compile the Java code.
-3. Run the main application.
+1) Clone the Repository:
+Open your terminal or command prompt.
+Run the following command to clone the repository:
+```bash
+git clone https://github.com/jahndev/parking-lot-service.git
+```
+2) Navigate to the Project Directory:
+Change your working directory to the cloned repository:
 
+```bash
+cd parking-lot-service
+```
+3) Compile the Java Code:
+If you have Gradle installed, use the following command to build the project:
+```bash
+./gradlew build
+```
+
+If you don’t have Gradle installed, you can use the provided Gradle wrapper (gradlew or gradlew.bat depending on your OS).
+Run the Main Application:
+Execute the following command to start the Spring Boot application:
+```bash
+./gradlew bootRun
+```
 ## API Documentations
 
 http://localhost:8080/swagger-ui/index.html
